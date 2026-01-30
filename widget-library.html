@@ -8,28 +8,47 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --background: #ecf0f1;
-            --text: #2c3e50;
-            --border: #bdc3c7;
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --primary: #38bdf8;
+            --accent: #818cf8;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass-blur: blur(12px);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--background);
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .widget-title {
+            font-family: 'Outfit', sans-serif;
         }
 
         .container {
@@ -37,279 +56,291 @@
             margin: 0 auto;
         }
 
+        /* Glassmorphism Header */
         .header {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05), transparent 50%);
+            z-index: 0;
         }
 
         .header h1 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 28px;
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
         }
 
         .config-section {
             display: grid;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .input-group label {
+            font-size: 13px;
             font-weight: 600;
-            color: var(--primary);
-            font-size: 14px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .input-group input {
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: var(--transition);
         }
 
         .input-group input:focus {
             outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            background: rgba(15, 23, 42, 0.8);
         }
 
         button {
-            padding: 12px 24px;
-            background: var(--secondary);
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         button:hover {
-            background: #2980b9;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
+            box-shadow: 0 15px 30px rgba(56, 189, 248, 0.3);
+            filter: brightness(1.1);
         }
 
         button.secondary {
-            background: var(--success);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
         }
 
         button.secondary:hover {
-            background: #229954;
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .status {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .status.success {
-            background: #d5f4e6;
-            color: var(--success);
-            border: 2px solid var(--success);
-        }
-
-        .status.error {
-            background: #fadbd8;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-
+        /* Widgets Grid */
         .widgets-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
         }
 
         .widget {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 24px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .widget:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
         }
 
         .widget-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--background);
+            margin-bottom: 24px;
         }
 
         .widget-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--primary);
+            color: var(--text-main);
+            letter-spacing: -0.02em;
         }
 
         .widget-value {
-            font-size: 48px;
+            font-size: 64px;
+            font-family: 'Outfit', sans-serif;
             font-weight: 700;
-            color: var(--secondary);
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
-            margin: 30px 0;
-        }
-
-        .widget-unit {
-            font-size: 20px;
-            color: var(--text);
-            opacity: 0.7;
+            margin: 20px 0;
+            line-height: 1;
         }
 
         .widget-timestamp {
-            text-align: center;
             font-size: 12px;
-            color: var(--text);
-            opacity: 0.6;
+            color: var(--text-dim);
+            text-align: center;
+            margin-top: auto;
+            padding-top: 15px;
         }
 
+        .chart-container {
+            flex-grow: 1;
+            min-height: 250px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        /* Gauge Redesign */
         .gauge-container {
             position: relative;
-            width: 100%;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
         }
 
         .gauge-svg {
             transform: rotate(-90deg);
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
         }
 
         .gauge-bg {
             fill: none;
-            stroke: var(--background);
-            stroke-width: 12;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 14;
         }
 
         .gauge-fill {
             fill: none;
-            stroke: var(--secondary);
-            stroke-width: 12;
+            stroke-width: 14;
             stroke-linecap: round;
-            transition: stroke-dasharray 1s ease;
+            transition: stroke-dasharray 1s cubic-bezier(0.4, 0, 0.2, 1);
+            stroke: var(--primary);
         }
 
         .gauge-value {
             position: absolute;
-            font-size: 36px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 42px;
             font-weight: 700;
-            color: var(--primary);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
         }
 
-        .chart-container {
-            width: 100%;
-            height: 250px;
-            margin: 20px 0;
+        /* Instructions & Snippets */
+        .instructions {
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 30px;
         }
 
-        .table-widget {
-            overflow-x: auto;
+        .code-snippet {
+            background: #020617;
+            border: 1px solid var(--border);
+            color: #38bdf8;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .data-table th {
-            background: var(--background);
+        /* Status & Refresh */
+        .status {
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--primary);
+            animation: slideIn 0.3s ease-out;
         }
 
-        .data-table tr:hover {
-            background: #f8f9fa;
-        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--border);
-            border-radius: 50%;
-            border-top-color: var(--secondary);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
             to {
-                transform: rotate(360deg);
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
         .refresh-indicator {
-            color: var(--success);
-            font-size: 12px;
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s;
+            box-shadow: 0 0 15px var(--success);
         }
 
         .refresh-indicator.active {
             opacity: 1;
         }
 
-        .instructions {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
+        /* Trend Badges */
+        .trend-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
-        .instructions h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
+        ::-webkit-scrollbar {
+            width: 10px;
         }
 
-        .instructions ul {
-            margin-left: 20px;
-            line-height: 1.6;
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
         }
 
-        .code-snippet {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            overflow-x: auto;
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
     </style>
 </head>
@@ -364,188 +395,189 @@
             <!-- Real-Time Line Chart Widget -->
             <div class="widget" style="grid-column: span 2;">
                 <div class="widget-header">
-                    <span class="widget-title">📈 Real-Time Line Chart</span>
-                    <span class="refresh-indicator" id="refresh-line">↻</span>
+                    <span class="widget-title">📈 Real-Time Monitoring</span>
+                    <span class="refresh-indicator" id="refresh-line"></span>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div class="input-group">
-                        <label>Asset ID</label>
-                        <input type="text" id="line-asset-id" placeholder="asset-123" value="">
+                        <label>Target Asset</label>
+                        <input type="text" id="line-asset-id" placeholder="asset-123">
                     </div>
                     <div class="input-group">
-                        <label>Attribute Name</label>
-                        <input type="text" id="line-attribute" placeholder="temperature" value="">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div class="input-group">
-                        <label>Time Range (minutes)</label>
-                        <input type="number" id="line-time-range" placeholder="60" value="60">
-                    </div>
-                    <div class="input-group">
-                        <label>Update Interval (seconds)</label>
-                        <input type="number" id="line-interval" placeholder="5" value="5">
+                        <label>Attribute</label>
+                        <input type="text" id="line-attribute" placeholder="temperature">
                     </div>
                 </div>
-                <button class="secondary" onclick="startLineChartWidget()">Start Line Chart</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="input-group">
+                        <label>Range (min)</label>
+                        <input type="number" id="line-time-range" value="60">
+                    </div>
+                    <div class="input-group">
+                        <label>Refresh (s)</label>
+                        <input type="number" id="line-interval" value="5">
+                    </div>
+                </div>
+                <button onclick="startLineChartWidget()">Initialize Tracking</button>
                 <div class="chart-container">
                     <canvas id="lineChart"></canvas>
                 </div>
-                <div class="widget-timestamp" id="lineTimestamp">Configure and start to see data</div>
+                <div class="widget-timestamp" id="lineTimestamp">Waiting for initialization...</div>
             </div>
 
             <!-- Area Chart Widget -->
             <div class="widget" style="grid-column: span 2;">
                 <div class="widget-header">
-                    <span class="widget-title">📊 Area Chart (Historical Data)</span>
-                    <span class="refresh-indicator" id="refresh-area">↻</span>
+                    <span class="widget-title">📊 Historical Analysis</span>
+                    <span class="refresh-indicator" id="refresh-area"></span>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div class="input-group">
-                        <label>Asset ID</label>
-                        <input type="text" id="area-asset-id" placeholder="asset-456" value="">
+                        <label>Source Asset</label>
+                        <input type="text" id="area-asset-id" placeholder="asset-456">
                     </div>
                     <div class="input-group">
-                        <label>Attribute Name</label>
-                        <input type="text" id="area-attribute" placeholder="power" value="">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div class="input-group">
-                        <label>Time Range (hours)</label>
-                        <input type="number" id="area-time-range" placeholder="24" value="24">
-                    </div>
-                    <div class="input-group">
-                        <label>Data Points</label>
-                        <input type="number" id="area-points" placeholder="50" value="50">
+                        <label>Attribute</label>
+                        <input type="text" id="area-attribute" placeholder="power">
                     </div>
                 </div>
-                <button class="secondary" onclick="startAreaChartWidget()">Start Area Chart</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="input-group">
+                        <label>Period (hrs)</label>
+                        <input type="number" id="area-time-range" value="24">
+                    </div>
+                    <div class="input-group">
+                        <label>Resolution</label>
+                        <input type="number" id="area-points" value="50">
+                    </div>
+                </div>
+                <button onclick="startAreaChartWidget()">Load History</button>
                 <div class="chart-container">
                     <canvas id="areaChart"></canvas>
                 </div>
-                <div class="widget-timestamp" id="areaTimestamp">Configure and start to see data</div>
+                <div class="widget-timestamp" id="areaTimestamp">Configure source to load data</div>
             </div>
 
             <!-- Streaming Chart Widget -->
             <div class="widget" style="grid-column: span 2;">
                 <div class="widget-header">
-                    <span class="widget-title">⚡ Live Streaming Chart</span>
-                    <span class="refresh-indicator" id="refresh-stream">↻</span>
+                    <span class="widget-title">⚡ Live Pulse</span>
+                    <span class="refresh-indicator" id="refresh-stream"></span>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div class="input-group">
-                        <label>Asset ID</label>
-                        <input type="text" id="stream-asset-id" placeholder="asset-789" value="">
+                        <label>Live Asset</label>
+                        <input type="text" id="stream-asset-id" placeholder="asset-789">
                     </div>
                     <div class="input-group">
-                        <label>Attribute Name</label>
-                        <input type="text" id="stream-attribute" placeholder="voltage" value="">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div class="input-group">
-                        <label>Visible Points</label>
-                        <input type="number" id="stream-points" placeholder="30" value="30">
-                    </div>
-                    <div class="input-group">
-                        <label>Update Rate (ms)</label>
-                        <input type="number" id="stream-rate" placeholder="1000" value="1000">
+                        <label>Metric</label>
+                        <input type="text" id="stream-attribute" placeholder="voltage">
                     </div>
                 </div>
-                <button class="secondary" onclick="startStreamChartWidget()">Start Streaming</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="input-group">
+                        <label>Samples</label>
+                        <input type="number" id="stream-points" value="30">
+                    </div>
+                    <div class="input-group">
+                        <label>Latency (ms)</label>
+                        <input type="number" id="stream-rate" value="1000">
+                    </div>
+                </div>
+                <button onclick="startStreamChartWidget()">Start Live Stream</button>
                 <div class="chart-container">
                     <canvas id="streamChart"></canvas>
                 </div>
-                <div class="widget-timestamp" id="streamTimestamp">Configure and start to see live data</div>
+                <div class="widget-timestamp" id="streamTimestamp">Waiting for pulse...</div>
             </div>
 
             <!-- Multi-Metric Comparison Chart -->
             <div class="widget" style="grid-column: span 2;">
                 <div class="widget-header">
-                    <span class="widget-title">📉 Multi-Metric Comparison</span>
-                    <span class="refresh-indicator" id="refresh-multi">↻</span>
+                    <span class="widget-title">📉 Comparative Metrics</span>
+                    <span class="refresh-indicator" id="refresh-multi"></span>
                 </div>
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Asset ID & Attributes (format: assetId:attribute, comma-separated)</label>
-                    <input type="text" id="multi-metrics" placeholder="asset1:temp,asset2:humidity,asset3:pressure"
-                        value="">
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>Metrics Registry (asset:attr, ...)</label>
+                    <input type="text" id="multi-metrics" placeholder="asset1:temp, asset2:temp">
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div class="input-group">
-                        <label>Time Range (hours)</label>
-                        <input type="number" id="multi-time-range" placeholder="12" value="12">
+                        <label>Window (hrs)</label>
+                        <input type="number" id="multi-time-range" value="12">
                     </div>
                     <div class="input-group">
-                        <label>Update Interval (seconds)</label>
-                        <input type="number" id="multi-interval" placeholder="10" value="10">
+                        <label>Sync Rate (s)</label>
+                        <input type="number" id="multi-interval" value="10">
                     </div>
                 </div>
-                <button class="secondary" onclick="startMultiChartWidget()">Start Comparison Chart</button>
+                <button onclick="startMultiChartWidget()">Sync Comparison</button>
                 <div class="chart-container">
                     <canvas id="multiChart"></canvas>
                 </div>
-                <div class="widget-timestamp" id="multiTimestamp">Configure and start to see data</div>
+                <div class="widget-timestamp" id="multiTimestamp">Register metrics to compare</div>
             </div>
 
             <!-- Gauge Widget (Enhanced) -->
             <div class="widget">
                 <div class="widget-header">
-                    <span class="widget-title">🎯 Current Value Gauge</span>
-                    <span class="refresh-indicator" id="refresh-gauge">↻</span>
+                    <span class="widget-title">🎯 Precision Gauge</span>
+                    <span class="refresh-indicator" id="refresh-gauge"></span>
                 </div>
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Asset ID</label>
-                    <input type="text" id="gauge-asset-id" placeholder="asset-123" value="">
+                    <label>Target Asset</label>
+                    <input type="text" id="gauge-asset-id" placeholder="asset-123">
                 </div>
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Attribute Name</label>
-                    <input type="text" id="gauge-attribute" placeholder="temperature" value="">
+                    <label>Metric</label>
+                    <input type="text" id="gauge-attribute" placeholder="temperature">
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                     <div class="input-group">
-                        <label>Min Value</label>
-                        <input type="number" id="gauge-min" placeholder="0" value="0">
+                        <label>Min</label>
+                        <input type="number" id="gauge-min" value="0">
                     </div>
                     <div class="input-group">
-                        <label>Max Value</label>
-                        <input type="number" id="gauge-max" placeholder="100" value="100">
+                        <label>Max</label>
+                        <input type="number" id="gauge-max" value="100">
                     </div>
                 </div>
-                <button class="secondary" onclick="startGaugeWidget()">Start Gauge Widget</button>
+                <button onclick="startGaugeWidget()">Calibrate & Start</button>
                 <div class="gauge-container" id="gaugeContainer">
-                    <svg class="gauge-svg" width="200" height="200" viewBox="0 0 200 200">
+                    <svg class="gauge-svg" width="220" height="220" viewBox="0 0 200 200">
                         <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
                         <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="80" stroke-dasharray="0 502">
                         </circle>
                     </svg>
                     <div class="gauge-value" id="gaugeValue">--</div>
                 </div>
-                <div class="widget-timestamp" id="gaugeTimestamp">No data yet</div>
+                <div class="widget-timestamp" id="gaugeTimestamp">Awaiting calibration...</div>
             </div>
 
             <!-- Value Display Widget with Trend -->
             <div class="widget">
                 <div class="widget-header">
-                    <span class="widget-title">💡 Current Value + Trend</span>
-                    <span class="refresh-indicator" id="refresh-value">↻</span>
+                    <span class="widget-title">💡 Insight Monitor</span>
+                    <span class="refresh-indicator" id="refresh-value"></span>
                 </div>
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Asset ID</label>
-                    <input type="text" id="value-asset-id" placeholder="asset-456" value="">
+                    <label>Source Asset</label>
+                    <input type="text" id="value-asset-id" placeholder="asset-456">
                 </div>
                 <div class="input-group" style="margin-bottom: 15px;">
-                    <label>Attribute Name</label>
-                    <input type="text" id="value-attribute" placeholder="power" value="">
+                    <label>Attribute</label>
+                    <input type="text" id="value-attribute" placeholder="power">
                 </div>
-                <button class="secondary" onclick="startValueWidget()">Start Value Widget</button>
+                <button onclick="startValueWidget()">Enable Monitoring</button>
+
                 <div class="widget-value" id="currentValue">--</div>
-                <div style="text-align: center; margin: 10px 0;">
-                    <span id="trendIndicator" style="font-size: 24px;">━</span>
-                    <span id="trendText" style="margin-left: 10px; font-weight: 600; color: var(--text);">No
-                        trend</span>
+                <div style="display: flex; justify-content: center;">
+                    <div id="trendBadge" class="trend-badge">
+                        <span id="trendIndicator" style="margin-right: 8px;">━</span>
+                        <span id="trendText">Stable</span>
+                    </div>
                 </div>
-                <div class="widget-timestamp" id="valueTimestamp">No data yet</div>
+                <div class="widget-timestamp" id="valueTimestamp">Initialize to see insights</div>
             </div>
         </div>
 
@@ -584,15 +616,21 @@
             value: []
         };
 
-        // Chart color palette
+        // Chart color palette (Brighter for Dark Mode)
         const colors = [
-            { bg: 'rgba(52, 152, 219, 0.2)', border: 'rgba(52, 152, 219, 1)' },
-            { bg: 'rgba(46, 204, 113, 0.2)', border: 'rgba(46, 204, 113, 1)' },
-            { bg: 'rgba(231, 76, 60, 0.2)', border: 'rgba(231, 76, 60, 1)' },
-            { bg: 'rgba(241, 196, 15, 0.2)', border: 'rgba(241, 196, 15, 1)' },
-            { bg: 'rgba(155, 89, 182, 0.2)', border: 'rgba(155, 89, 182, 1)' },
-            { bg: 'rgba(26, 188, 156, 0.2)', border: 'rgba(26, 188, 156, 1)' }
+            { bg: 'rgba(56, 189, 248, 0.1)', border: '#38bdf8', glow: 'rgba(56, 189, 248, 0.5)' },
+            { bg: 'rgba(129, 140, 248, 0.1)', border: '#818cf8', glow: 'rgba(129, 140, 248, 0.5)' },
+            { bg: 'rgba(74, 222, 128, 0.1)', border: '#4ade80', glow: 'rgba(74, 222, 128, 0.5)' },
+            { bg: 'rgba(251, 191, 36, 0.1)', border: '#fbbf24', glow: 'rgba(251, 191, 36, 0.5)' },
+            { bg: 'rgba(248, 113, 113, 0.1)', border: '#f87171', glow: 'rgba(248, 113, 113, 0.5)' }
         ];
+
+        // Global Chart Defaults
+        if (window.Chart) {
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        }
 
         // Toggle Demo Mode
         function toggleDemoMode() {
@@ -600,46 +638,43 @@
             const btn = document.getElementById('demoModeBtn');
             if (isDemoMode) {
                 btn.textContent = '🛑 Disable Demo Mode';
-                btn.style.background = '#e74c3c';
-                showStatus('success', 'Demo Mode Enabled - Realistic data will be simulated!');
+                btn.style.background = '#f87171';
+                showStatus('success', 'Demo Mode Enabled - Simulation is active!');
 
                 // Auto-fill example values
                 document.getElementById('line-asset-id').value = 'weather-station';
                 document.getElementById('line-attribute').value = 'temperature';
-                document.getElementById('area-asset-id').value = 'solar-array';
-                document.getElementById('area-attribute').value = 'power';
-                document.getElementById('stream-asset-id').value = 'grid-meter';
-                document.getElementById('stream-attribute').value = 'voltage';
-                document.getElementById('multi-metrics').value = 'room1:temp,room2:temp,room3:temp';
-                document.getElementById('gauge-asset-id').value = 'tank-1';
-                document.getElementById('gauge-attribute').value = 'level';
-                document.getElementById('value-asset-id').value = 'light-sensor';
-                document.getElementById('value-attribute').value = 'brightness';
+                document.getElementById('area-asset-id').value = 'power-grid';
+                document.getElementById('area-attribute').value = 'load';
+                document.getElementById('stream-asset-id').value = 'live-server';
+                document.getElementById('stream-attribute').value = 'cpu-usage';
+                document.getElementById('multi-metrics').value = 'vessel:temp, reactor:temp';
+                document.getElementById('gauge-asset-id').value = 'battery-pack';
+                document.getElementById('gauge-attribute').value = 'charge';
+                document.getElementById('value-asset-id').value = 'room-1';
+                document.getElementById('value-attribute').value = 'occupancy';
             } else {
                 btn.textContent = '🚀 Enable Demo Mode (Dummy Data)';
-                btn.style.background = '#9b59b6';
-                showStatus('warning', 'Demo Mode Disabled - Connecting to OpenRemote...');
+                btn.style.background = '#818cf8';
+                showStatus('warning', 'Demo Mode Disabled.');
             }
         }
 
         // Connect to OpenRemote
         async function connectToOpenRemote() {
             if (isDemoMode) {
-                showStatus('success', 'Currently in Demo Mode - Simulation is active!');
+                showStatus('success', 'Currently in Demo Mode.');
                 return;
             }
+            instanceUrl = document.getElementById('instanceUrl').value.trim();
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const token = document.getElementById('accessToken').value.trim();
-
-            const status = document.getElementById('connectionStatus');
 
             if (!instanceUrl) {
                 showStatus('error', 'Please enter OpenRemote instance URL');
                 return;
             }
-
-            instanceUrl = instanceUrl.replace(/\/$/, '');
 
             try {
                 if (token) {
@@ -648,9 +683,7 @@
                 } else if (username && password) {
                     const response = await fetch(`${instanceUrl}/auth/realms/master/protocol/openid-connect/token`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: new URLSearchParams({
                             'grant_type': 'password',
                             'client_id': 'openremote',
@@ -659,36 +692,18 @@
                         })
                     });
 
-                    if (!response.ok) {
-                        throw new Error(`Authentication failed: ${response.statusText}`);
-                    }
-
+                    if (!response.ok) throw new Error(`Auth failed: ${response.statusText}`);
                     const data = await response.json();
                     authToken = `Bearer ${data.access_token}`;
-                    showStatus('success', 'Successfully authenticated with OpenRemote!');
+                    showStatus('success', 'Successfully authenticated!');
                 } else {
-                    showStatus('error', 'Please provide either username/password OR access token');
+                    showStatus('error', 'Provide credentials or token');
                     return;
                 }
-
-                await testConnection();
-
             } catch (error) {
                 console.error('Connection error:', error);
                 showStatus('error', `Connection failed: ${error.message}`);
                 authToken = null;
-            }
-        }
-
-        async function testConnection() {
-            const response = await fetch(`${instanceUrl}/api/master/asset`, {
-                headers: {
-                    'Authorization': authToken
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch assets - check your credentials');
             }
         }
 
@@ -697,6 +712,8 @@
             status.className = `status ${type}`;
             status.textContent = message;
             status.style.display = 'block';
+            status.style.background = type === 'success' ? 'rgba(74, 222, 128, 0.2)' : 'rgba(248, 113, 113, 0.2)';
+            status.style.color = type === 'success' ? '#4ade80' : '#f87171';
 
             setTimeout(() => {
                 status.style.display = 'none';
@@ -705,96 +722,65 @@
 
         async function fetchAttributeValue(assetId, attributeName) {
             if (isDemoMode) {
-                // Simulate various types of telemetry based on attribute name
                 let value = 0;
-                let type = 'number';
-
-                if (attributeName.includes('temp')) {
-                    value = 20 + Math.random() * 10; // 20-30°C
-                } else if (attributeName.includes('power')) {
-                    value = 100 + Math.random() * 500; // 100-600W
-                } else if (attributeName.includes('volts')) {
-                    value = 220 + (Math.random() - 0.5) * 5; // 217-222V
-                } else if (attributeName.includes('hum')) {
-                    value = 40 + Math.random() * 20; // 40-60%
-                } else {
-                    value = Math.random() * 100;
-                }
+                if (attributeName.includes('temp')) value = 22 + Math.random() * 5;
+                else if (attributeName.includes('power')) value = 2000 + Math.random() * 1000;
+                else if (attributeName.includes('load')) value = 40 + Math.random() * 40;
+                else if (attributeName.includes('charge')) value = 60 + Math.random() * 20;
+                else value = Math.random() * 100;
 
                 return {
                     value: value.toFixed(2),
                     timestamp: Date.now(),
-                    assetName: `Demo Asset (${assetId})`,
-                    type: type
+                    assetName: `Demo Asset (${assetId})`
                 };
             }
 
-            if (!authToken || !instanceUrl) {
-                throw new Error('Not connected to OpenRemote');
-            }
+            if (!authToken || !instanceUrl) throw new Error('Not connected');
 
             const response = await fetch(`${instanceUrl}/api/master/asset/${assetId}`, {
-                headers: {
-                    'Authorization': authToken,
-                    'Accept': 'application/json'
-                }
+                headers: { 'Authorization': authToken, 'Accept': 'application/json' }
             });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch asset: ${response.statusText}`);
-            }
+            if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
 
             const asset = await response.json();
-
-            if (!asset.attributes || !asset.attributes[attributeName]) {
-                throw new Error(`Attribute '${attributeName}' not found`);
-            }
+            if (!asset.attributes || !asset.attributes[attributeName]) throw new Error(`Attribute not found`);
 
             return {
                 value: asset.attributes[attributeName].value,
                 timestamp: asset.attributes[attributeName].timestamp,
-                assetName: asset.name,
-                type: asset.attributes[attributeName].type
+                assetName: asset.name
             };
         }
 
-        async function fetchHistoricalData(assetId, attributeName, fromTimestamp, toTimestamp, interval) {
+        async function fetchHistoricalData(assetId, attributeName, from, to, interval) {
             if (isDemoMode) {
                 const points = [];
-                const count = Math.floor((toTimestamp - fromTimestamp) / interval);
-                let baseValue = 25; // Default base
-
-                if (attributeName.includes('power')) baseValue = 300;
-                if (attributeName.includes('hum')) baseValue = 50;
-
+                const count = 50;
+                const step = (to - from) / count;
                 for (let i = 0; i <= count; i++) {
-                    const ts = fromTimestamp + (i * interval);
-                    const noise = (Math.random() - 0.5) * (baseValue * 0.1);
                     points.push({
-                        timestamp: ts,
-                        value: (baseValue + noise).toFixed(2)
+                        timestamp: from + (i * step),
+                        value: (25 + Math.random() * 10).toFixed(2)
                     });
                 }
                 return points;
             }
 
-            if (!authToken || !instanceUrl) {
-                throw new Error('Not connected to OpenRemote');
-            }
+            if (!authToken || !instanceUrl) throw new Error('Not connected');
 
-            const response = await fetch(`${instanceUrl}/api/master/asset/datapoint/${assetId}/${attributeName}?fromTimestamp=${fromTimestamp}&toTimestamp=${toTimestamp}&interval=${interval}`, {
-                headers: {
-                    'Authorization': authToken,
-                    'Accept': 'application/json'
-                }
+            const response = await fetch(`${instanceUrl}/api/master/asset/datapoint/${assetId}/${attributeName}?fromTimestamp=${from}&toTimestamp=${to}&interval=${interval}`, {
+                headers: { 'Authorization': authToken, 'Accept': 'application/json' }
             });
+            return response.ok ? await response.json() : [];
+        }
 
-            if (!response.ok) {
-                console.warn('Historical data endpoint failed, using current value');
-                return [];
+        function showRefreshIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('active');
+                setTimeout(() => el.classList.remove('active'), 800);
             }
-
-            return await response.json();
         }
 
         // Line Chart Widget
@@ -825,565 +811,428 @@
                 }
 
                 document.getElementById('lineTimestamp').textContent = `Last update: ${new Date(data.timestamp).toLocaleString()} | Value: ${data.value}`;
-            } catch (error) {
-                console.error('Line chart update error:', error);
-                document.getElementById('lineTimestamp').textContent = `Error: ${error.message}`;
-            }
-        }
+                // Line Chart Widget
+                function startLineChartWidget() {
+                    const assetId = document.getElementById('line-asset-id').value.trim();
+                    const attribute = document.getElementById('line-attribute').value.trim();
+                    const timeRange = parseInt(document.getElementById('line-time-range').value) || 60;
+                    const interval = (parseInt(document.getElementById('line-interval').value) || 5) * 1000;
 
-        function startLineChartWidget() {
-            const interval = (parseInt(document.getElementById('line-interval').value) || 5) * 1000;
+                    if (!assetId || !attribute) return;
+                    if (refreshIntervals.line) clearInterval(refreshIntervals.line);
+                    if (chartInstances.line) chartInstances.line.destroy();
 
-            if (refreshIntervals.line) {
-                clearInterval(refreshIntervals.line);
-            }
-
-            chartData.line = [];
-
-            if (chartInstances.line) {
-                chartInstances.line.destroy();
-            }
-
-            const ctx = document.getElementById('lineChart').getContext('2d');
-            chartInstances.line = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: 'Value',
-                        data: [],
-                        borderColor: colors[0].border,
-                        backgroundColor: colors[0].bg,
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: false,
-                        pointRadius: 3,
-                        pointHoverRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'minute',
-                                displayFormats: {
-                                    minute: 'HH:mm'
-                                }
+                    const ctx = document.getElementById('lineChart').getContext('2d');
+                    chartInstances.line = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            datasets: [{
+                                label: attribute,
+                                data: [],
+                                borderColor: '#38bdf8',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                fill: false,
+                                shadowBlur: 10,
+                                shadowColor: 'rgba(56, 189, 248, 0.5)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { type: 'time', time: { unit: 'minute' }, grid: { display: false } },
+                                y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
                             },
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        },
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Value'
-                            }
+                            plugins: { legend: { display: false } }
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true
+                    });
+
+                    refreshIntervals.line = setInterval(async () => {
+                        try {
+                            showRefreshIndicator('refresh-line');
+                            const data = await fetchAttributeValue(assetId, attribute);
+                            const now = Date.now();
+                            chartInstances.line.data.datasets[0].data.push({ x: now, y: parseFloat(data.value) });
+
+                            const cutoff = now - (timeRange * 60 * 1000);
+                            chartInstances.line.data.datasets[0].data = chartInstances.line.data.datasets[0].data.filter(d => d.x > cutoff);
+                            chartInstances.line.update('none');
+                            document.getElementById('lineTimestamp').textContent = `Sync: ${new Date().toLocaleTimeString()} | Val: ${data.value}`;
+                        } catch (e) { console.error(e); }
+                    }, interval);
+                }
+
+                // Area Chart Widget
+                async function startAreaChartWidget() {
+                    const assetId = document.getElementById('area-asset-id').value.trim();
+                    const attribute = document.getElementById('area-attribute').value.trim();
+                    const hours = parseInt(document.getElementById('area-time-range').value) || 24;
+
+                    if (!assetId || !attribute) return;
+                    showRefreshIndicator('refresh-area');
+
+                    const now = Date.now();
+                    const from = now - (hours * 3600 * 1000);
+                    const data = await fetchHistoricalData(assetId, attribute, from, now, (hours * 3600 * 1000) / 50);
+
+                    if (chartInstances.area) chartInstances.area.destroy();
+                    const ctx = document.getElementById('areaChart').getContext('2d');
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                    gradient.addColorStop(0, 'rgba(129, 140, 248, 0.3)');
+                    gradient.addColorStop(1, 'rgba(129, 140, 248, 0)');
+
+                    chartInstances.area = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            datasets: [{
+                                label: attribute,
+                                data: data.map(d => ({ x: d.timestamp, y: d.value })),
+                                borderColor: '#818cf8',
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 2,
+                                pointBackgroundColor: '#818cf8'
+                            }]
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    animation: {
-                        duration: 750
-                    }
-                }
-            });
-
-            updateLineChart();
-            refreshIntervals.line = setInterval(updateLineChart, interval);
-        }
-
-        // Area Chart Widget
-        async function updateAreaChart() {
-            const assetId = document.getElementById('area-asset-id').value.trim();
-            const attribute = document.getElementById('area-attribute').value.trim();
-            const timeRange = parseInt(document.getElementById('area-time-range').value) || 24;
-            const points = parseInt(document.getElementById('area-points').value) || 50;
-
-            if (!assetId || !attribute) return;
-
-            try {
-                showRefreshIndicator('refresh-area');
-
-                const now = Date.now();
-                const fromTime = now - (timeRange * 60 * 60 * 1000);
-                const interval = Math.floor((timeRange * 60 * 60 * 1000) / points);
-
-                // Try to fetch historical data
-                let historicalData = await fetchHistoricalData(assetId, attribute, fromTime, now, interval);
-
-                if (!historicalData || historicalData.length === 0) {
-                    // Fallback: create simulated historical data from current value
-                    const currentData = await fetchAttributeValue(assetId, attribute);
-                    const baseValue = parseFloat(currentData.value) || 0;
-
-                    chartData.area = [];
-                    for (let i = points; i >= 0; i--) {
-                        const timestamp = now - (i * interval);
-                        const variance = (Math.random() - 0.5) * (baseValue * 0.2);
-                        chartData.area.push({
-                            x: new Date(timestamp),
-                            y: baseValue + variance
-                        });
-                    }
-                } else {
-                    chartData.area = historicalData.map(d => ({
-                        x: new Date(d.timestamp),
-                        y: parseFloat(d.value) || 0
-                    }));
-                }
-
-                if (chartInstances.area) {
-                    chartInstances.area.data.datasets[0].data = chartData.area;
-                    chartInstances.area.update();
-                }
-
-                document.getElementById('areaTimestamp').textContent = `Showing ${chartData.area.length} data points over ${timeRange} hours`;
-            } catch (error) {
-                console.error('Area chart update error:', error);
-                document.getElementById('areaTimestamp').textContent = `Error: ${error.message}`;
-            }
-        }
-
-        function startAreaChartWidget() {
-            if (refreshIntervals.area) {
-                clearInterval(refreshIntervals.area);
-            }
-
-            if (chartInstances.area) {
-                chartInstances.area.destroy();
-            }
-
-            const ctx = document.getElementById('areaChart').getContext('2d');
-            chartInstances.area = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: 'Historical Data',
-                        data: [],
-                        borderColor: colors[1].border,
-                        backgroundColor: colors[1].bg,
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 2,
-                        pointHoverRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'hour',
-                                displayFormats: {
-                                    hour: 'MMM dd HH:mm'
-                                }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { type: 'time', grid: { display: false } },
+                                y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
                             },
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        },
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Value'
-                            }
+                            plugins: { legend: { display: false } }
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true
+                    });
+                    document.getElementById('areaTimestamp').textContent = `Visualizing last ${hours}h of telemetry`;
+                }
+
+                // Streaming Chart Widget
+                function startStreamChartWidget() {
+                    const assetId = document.getElementById('stream-asset-id').value.trim();
+                    const attribute = document.getElementById('stream-attribute').value.trim();
+                    const rate = parseInt(document.getElementById('stream-rate').value) || 1000;
+                    const samples = parseInt(document.getElementById('stream-points').value) || 30;
+
+                    if (!assetId || !attribute) return;
+                    if (refreshIntervals.stream) clearInterval(refreshIntervals.stream);
+                    if (chartInstances.stream) chartInstances.stream.destroy();
+
+                    const ctx = document.getElementById('streamChart').getContext('2d');
+                    chartInstances.stream = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: Array(samples).fill(''),
+                            datasets: [{
+                                data: Array(samples).fill(null),
+                                borderColor: '#4ade80',
+                                borderWidth: 2,
+                                tension: 0.5,
+                                pointRadius: 0,
+                                fill: false
+                            }]
                         },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    }
-                }
-            });
-
-            updateAreaChart();
-            refreshIntervals.area = setInterval(updateAreaChart, 30000); // Update every 30 seconds
-        }
-
-        // Streaming Chart Widget
-        async function updateStreamChart() {
-            const assetId = document.getElementById('stream-asset-id').value.trim();
-            const attribute = document.getElementById('stream-attribute').value.trim();
-            const maxPoints = parseInt(document.getElementById('stream-points').value) || 30;
-
-            if (!assetId || !attribute) return;
-
-            try {
-                showRefreshIndicator('refresh-stream');
-                const data = await fetchAttributeValue(assetId, attribute);
-
-                chartData.stream.push({
-                    x: new Date(data.timestamp),
-                    y: parseFloat(data.value) || 0
-                });
-
-                // Keep only the last N points
-                if (chartData.stream.length > maxPoints) {
-                    chartData.stream.shift();
-                }
-
-                if (chartInstances.stream) {
-                    chartInstances.stream.data.datasets[0].data = chartData.stream;
-                    chartInstances.stream.update('none');
-                }
-
-                document.getElementById('streamTimestamp').textContent = `Live: ${new Date(data.timestamp).toLocaleTimeString()} | ${data.value}`;
-            } catch (error) {
-                console.error('Stream chart update error:', error);
-                document.getElementById('streamTimestamp').textContent = `Error: ${error.message}`;
-            }
-        }
-
-        function startStreamChartWidget() {
-            const updateRate = parseInt(document.getElementById('stream-rate').value) || 1000;
-
-            if (refreshIntervals.stream) {
-                clearInterval(refreshIntervals.stream);
-            }
-
-            chartData.stream = [];
-
-            if (chartInstances.stream) {
-                chartInstances.stream.destroy();
-            }
-
-            const ctx = document.getElementById('streamChart').getContext('2d');
-            chartInstances.stream = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: 'Live Stream',
-                        data: [],
-                        borderColor: colors[2].border,
-                        backgroundColor: colors[2].bg,
-                        borderWidth: 3,
-                        tension: 0.1,
-                        fill: false,
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'second',
-                                displayFormats: {
-                                    second: 'HH:mm:ss'
-                                }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: { duration: 300 },
+                            scales: {
+                                x: { display: false },
+                                y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
                             },
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        },
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Value'
-                            }
+                            plugins: { legend: { display: false } }
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    animation: false
+                    });
+
+                    refreshIntervals.stream = setInterval(async () => {
+                        try {
+                            showRefreshIndicator('refresh-stream');
+                            const data = await fetchAttributeValue(assetId, attribute);
+                            const ds = chartInstances.stream.data.datasets[0].data;
+                            ds.push(parseFloat(data.value));
+                            if (ds.length > samples) ds.shift();
+                            chartInstances.stream.update('none');
+                            document.getElementById('streamTimestamp').textContent = `Pulse: ${data.value} @ ${new Date().toLocaleTimeString()}`;
+                        } catch (e) { console.error(e); }
+                    }, rate);
                 }
-            });
 
-            updateStreamChart();
-            refreshIntervals.stream = setInterval(updateStreamChart, updateRate);
-        }
+                // Multi-Metric Comparison Chart
+                async function updateMultiChart() {
+                    const metricsInput = document.getElementById('multi-metrics').value.trim();
+                    const timeRange = parseInt(document.getElementById('multi-time-range').value) || 12;
 
-        // Multi-Metric Comparison Chart
-        async function updateMultiChart() {
-            const metricsInput = document.getElementById('multi-metrics').value.trim();
-            const timeRange = parseInt(document.getElementById('multi-time-range').value) || 12;
-
-            if (!metricsInput) return;
-
-            try {
-                showRefreshIndicator('refresh-multi');
-
-                const metrics = metricsInput.split(',').map(m => {
-                    const [assetId, attribute] = m.trim().split(':');
-                    return { assetId, attribute };
-                });
-
-                const now = Date.now();
-                const datasets = [];
-
-                for (let i = 0; i < metrics.length; i++) {
-                    const { assetId, attribute } = metrics[i];
-                    if (!assetId || !attribute) continue;
+                    if (!metricsInput) return;
 
                     try {
-                        const data = await fetchAttributeValue(assetId, attribute);
+                        showRefreshIndicator('refresh-multi');
 
-                        if (!chartData.multi[`${assetId}:${attribute}`]) {
-                            chartData.multi[`${assetId}:${attribute}`] = [];
+                        const metrics = metricsInput.split(',').map(m => {
+                            const [assetId, attribute] = m.trim().split(':');
+                            return { assetId, attribute };
+                        });
+
+                        const now = Date.now();
+                        const datasets = [];
+
+                        for (let i = 0; i < metrics.length; i++) {
+                            const { assetId, attribute } = metrics[i];
+                            if (!assetId || !attribute) continue;
+
+                            try {
+                                const data = await fetchAttributeValue(assetId, attribute);
+
+                                if (!chartData.multi[`${assetId}:${attribute}`]) {
+                                    chartData.multi[`${assetId}:${attribute}`] = [];
+                                }
+
+                                chartData.multi[`${assetId}:${attribute}`].push({
+                                    x: new Date(data.timestamp),
+                                    y: parseFloat(data.value) || 0
+                                });
+
+                                // Keep only data within time range
+                                const cutoff = now - (timeRange * 60 * 60 * 1000);
+                                chartData.multi[`${assetId}:${attribute}`] = chartData.multi[`${assetId}:${attribute}`].filter(d => d.x.getTime() > cutoff);
+
+                                const color = colors[i % colors.length];
+                                datasets.push({
+                                    label: `${data.assetName} - ${attribute}`,
+                                    data: chartData.multi[`${assetId}:${attribute}`],
+                                    borderColor: color.border,
+                                    backgroundColor: color.bg,
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    fill: false,
+                                    pointRadius: 2
+                                });
+                            } catch (err) {
+                                console.error(`Error fetching ${assetId}:${attribute}:`, err);
+                            }
                         }
 
-                        chartData.multi[`${assetId}:${attribute}`].push({
-                            x: new Date(data.timestamp),
-                            y: parseFloat(data.value) || 0
-                        });
+                        if (chartInstances.multi) {
+                            chartInstances.multi.data.datasets = datasets;
+                            chartInstances.multi.update();
+                        }
 
-                        // Keep only data within time range
-                        const cutoff = now - (timeRange * 60 * 60 * 1000);
-                        chartData.multi[`${assetId}:${attribute}`] = chartData.multi[`${assetId}:${attribute}`].filter(d => d.x.getTime() > cutoff);
-
-                        const color = colors[i % colors.length];
-                        datasets.push({
-                            label: `${data.assetName} - ${attribute}`,
-                            data: chartData.multi[`${assetId}:${attribute}`],
-                            borderColor: color.border,
-                            backgroundColor: color.bg,
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: false,
-                            pointRadius: 2
-                        });
-                    } catch (err) {
-                        console.error(`Error fetching ${assetId}:${attribute}:`, err);
+                        document.getElementById('multiTimestamp').textContent = `Comparing ${datasets.length} metrics | Last update: ${new Date().toLocaleTimeString()}`;
+                    } catch (error) {
+                        console.error('Multi chart update error:', error);
+                        document.getElementById('multiTimestamp').textContent = `Error: ${error.message}`;
                     }
                 }
 
-                if (chartInstances.multi) {
-                    chartInstances.multi.data.datasets = datasets;
-                    chartInstances.multi.update();
-                }
+                function startMultiChartWidget() {
+                    const interval = (parseInt(document.getElementById('multi-interval').value) || 10) * 1000;
 
-                document.getElementById('multiTimestamp').textContent = `Comparing ${datasets.length} metrics | Last update: ${new Date().toLocaleTimeString()}`;
-            } catch (error) {
-                console.error('Multi chart update error:', error);
-                document.getElementById('multiTimestamp').textContent = `Error: ${error.message}`;
-            }
-        }
+                    if (refreshIntervals.multi) {
+                        clearInterval(refreshIntervals.multi);
+                    }
 
-        function startMultiChartWidget() {
-            const interval = (parseInt(document.getElementById('multi-interval').value) || 10) * 1000;
+                    chartData.multi = {};
 
-            if (refreshIntervals.multi) {
-                clearInterval(refreshIntervals.multi);
-            }
+                    if (chartInstances.multi) {
+                        chartInstances.multi.destroy();
+                    }
 
-            chartData.multi = {};
-
-            if (chartInstances.multi) {
-                chartInstances.multi.destroy();
-            }
-
-            const ctx = document.getElementById('multiChart').getContext('2d');
-            chartInstances.multi = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: []
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'minute',
-                                displayFormats: {
-                                    minute: 'HH:mm'
+                    const ctx = document.getElementById('multiChart').getContext('2d');
+                    chartInstances.multi = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            datasets: []
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'minute',
+                                        displayFormats: {
+                                            minute: 'HH:mm'
+                                        }
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Time'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: false,
+                                    title: {
+                                        display: true,
+                                        text: 'Value'
+                                    }
                                 }
                             },
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        },
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Value'
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false
+                                }
                             }
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
+                    });
+
+                    updateMultiChart();
+                    refreshIntervals.multi = setInterval(updateMultiChart, interval);
+                }
+
+                // Gauge Widget
+                async function updateGaugeWidget() {
+                    const assetId = document.getElementById('gauge-asset-id').value.trim();
+                    const attribute = document.getElementById('gauge-attribute').value.trim();
+                    const minValue = parseFloat(document.getElementById('gauge-min').value) || 0;
+                    const maxValue = parseFloat(document.getElementById('gauge-max').value) || 100;
+
+                    if (!assetId || !attribute) return;
+
+                    try {
+                        // Multi-Metric Comparison Chart
+                        async function startMultiChartWidget() {
+                            const metricsStr = document.getElementById('multi-metrics').value;
+                            const metrics = metricsStr.split(',').map(s => s.trim().split(':'));
+                            const hours = parseInt(document.getElementById('multi-time-range').value) || 12;
+
+                            if (!metricsStr) return;
+                            if (chartInstances.multi) chartInstances.multi.destroy();
+                            const ctx = document.getElementById('multiChart').getContext('2d');
+
+                            const datasets = metrics.map((m, i) => ({
+                                label: m[1] || 'Metric',
+                                data: [],
+                                borderColor: colors[i % colors.length].border,
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: false,
+                                pointRadius: 0
+                            }));
+
+                            chartInstances.multi = new Chart(ctx, {
+                                type: 'line',
+                                data: { datasets },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        x: { type: 'time', grid: { display: false } },
+                                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                                    },
+                                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                                }
+                            });
+
+                            const interval = (parseInt(document.getElementById('multi-interval').value) || 10) * 1000;
+                            if (refreshIntervals.multi) clearInterval(refreshIntervals.multi);
+                            refreshIntervals.multi = setInterval(async () => {
+                                showRefreshIndicator('refresh-multi');
+                                for (let i = 0; i < metrics.length; i++) {
+                                    try {
+                                        const data = await fetchAttributeValue(metrics[i][0], metrics[i][1]);
+                                        const now = Date.now();
+                                        chartInstances.multi.data.datasets[i].data.push({ x: now, y: parseFloat(data.value) });
+                                        const cutoff = now - (hours * 3600 * 1000);
+                                        chartInstances.multi.data.datasets[i].data = chartInstances.multi.data.datasets[i].data.filter(p => p.x > cutoff);
+                                    } catch (e) { console.error(e); }
+                                }
+                                chartInstances.multi.update('none');
+                                document.getElementById('multiTimestamp').textContent = `Sync: ${metrics.length} metrics active @ ${new Date().toLocaleTimeString()}`;
+                            }, interval);
                         }
-                    }
-                }
-            });
 
-            updateMultiChart();
-            refreshIntervals.multi = setInterval(updateMultiChart, interval);
-        }
+                        // Gauge Widget
+                        function startGaugeWidget() {
+                            const assetId = document.getElementById('gauge-asset-id').value.trim();
+                            const attribute = document.getElementById('gauge-attribute').value.trim();
+                            const min = parseFloat(document.getElementById('gauge-min').value) || 0;
+                            const max = parseFloat(document.getElementById('gauge-max').value) || 100;
 
-        // Gauge Widget
-        async function updateGaugeWidget() {
-            const assetId = document.getElementById('gauge-asset-id').value.trim();
-            const attribute = document.getElementById('gauge-attribute').value.trim();
-            const minValue = parseFloat(document.getElementById('gauge-min').value) || 0;
-            const maxValue = parseFloat(document.getElementById('gauge-max').value) || 100;
+                            if (!assetId || !attribute) return;
+                            if (refreshIntervals.gauge) clearInterval(refreshIntervals.gauge);
+                            refreshIntervals.gauge = setInterval(async () => {
+                                try {
+                                    const data = await fetchAttributeValue(assetId, attribute);
+                                    showRefreshIndicator('refresh-gauge');
+                                    const val = parseFloat(data.value);
+                                    const percent = Math.min(Math.max((val - min) / (max - min), 0), 1);
+                                    const offset = 502 - (percent * 502);
 
-            if (!assetId || !attribute) return;
+                                    document.getElementById('gaugeFill').style.strokeDasharray = `${502 - offset} 502`;
+                                    document.getElementById('gaugeValue').textContent = val.toFixed(1);
 
-            try {
-                showRefreshIndicator('refresh-gauge');
-                const data = await fetchAttributeValue(assetId, attribute);
+                                    const fill = document.getElementById('gaugeFill');
+                                    if (percent < 0.3) fill.style.stroke = '#4ade80';
+                                    else if (percent < 0.7) fill.style.stroke = '#fbbf24';
+                                    else fill.style.stroke = '#f87171';
 
-                const value = parseFloat(data.value) || 0;
-                const percentage = Math.min(Math.max(((value - minValue) / (maxValue - minValue)) * 100, 0), 100);
-                const circumference = 2 * Math.PI * 80;
-                const offset = circumference - (percentage / 100) * circumference;
+                                    document.getElementById('gaugeTimestamp').textContent = `Precision tracking | ${new Date().toLocaleTimeString()}`;
+                                } catch (e) { console.error(e); }
+                            }, 3000);
+                        }
 
-                document.getElementById('gaugeFill').setAttribute('stroke-dasharray', `${circumference - offset} ${circumference}`);
+                        // Value Monitor Widget
+                        function startValueWidget() {
+                            const assetId = document.getElementById('value-asset-id').value.trim();
+                            const attribute = document.getElementById('value-attribute').value.trim();
+                            let lastValue = null;
 
-                // Color based on percentage
-                let color = colors[1].border; // Green
-                if (percentage > 75) color = colors[2].border; // Red
-                else if (percentage > 50) color = colors[3].border; // Yellow
+                            if (!assetId || !attribute) return;
+                            if (refreshIntervals.value) clearInterval(refreshIntervals.value);
+                            refreshIntervals.value = setInterval(async () => {
+                                try {
+                                    const data = await fetchAttributeValue(assetId, attribute);
+                                    showRefreshIndicator('refresh-value');
+                                    const val = parseFloat(data.value);
+                                    document.getElementById('currentValue').textContent = val.toFixed(2);
 
-                document.getElementById('gaugeFill').setAttribute('stroke', color);
-                document.getElementById('gaugeValue').textContent = value.toFixed(1);
-                document.getElementById('gaugeTimestamp').textContent = `Updated: ${new Date(data.timestamp).toLocaleString()}`;
-            } catch (error) {
-                console.error('Gauge update error:', error);
-                document.getElementById('gaugeValue').textContent = 'ERR';
-                document.getElementById('gaugeTimestamp').textContent = `Error: ${error.message}`;
-            }
-        }
+                                    const indicator = document.getElementById('trendIndicator');
+                                    const text = document.getElementById('trendText');
+                                    const badge = document.getElementById('trendBadge');
 
-        function startGaugeWidget() {
-            if (refreshIntervals.gauge) {
-                clearInterval(refreshIntervals.gauge);
-            }
-            updateGaugeWidget();
-            refreshIntervals.gauge = setInterval(updateGaugeWidget, 5000);
-        }
+                                    if (lastValue !== null) {
+                                        if (val > lastValue) {
+                                            indicator.textContent = '↗';
+                                            text.textContent = 'Rising';
+                                            badge.style.background = 'rgba(74, 222, 128, 0.2)';
+                                            badge.style.color = '#4ade80';
+                                        } else if (val < lastValue) {
+                                            indicator.textContent = '↘';
+                                            text.textContent = 'Falling';
+                                            badge.style.background = 'rgba(248, 113, 113, 0.2)';
+                                            badge.style.color = '#f87171';
+                                        } else {
+                                            indicator.textContent = '━';
+                                            text.textContent = 'Stable';
+                                            badge.style.background = 'rgba(255,255,255,0.05)';
+                                            badge.style.color = '#94a3b8';
+                                        }
+                                    }
+                                    lastValue = val;
+                                    document.getElementById('valueTimestamp').textContent = `Monitor: ${new Date().toLocaleTimeString()}`;
+                                } catch (e) { console.error(e); }
+                            }, 4000);
+                        }
 
-        // Value Widget with Trend
-        async function updateValueWidget() {
-            const assetId = document.getElementById('value-asset-id').value.trim();
-            const attribute = document.getElementById('value-attribute').value.trim();
-
-            if (!assetId || !attribute) return;
-
-            try {
-                showRefreshIndicator('refresh-value');
-                const data = await fetchAttributeValue(assetId, attribute);
-
-                const currentValue = parseFloat(data.value) || 0;
-                chartData.value.push(currentValue);
-
-                // Keep last 10 values for trend calculation
-                if (chartData.value.length > 10) {
-                    chartData.value.shift();
-                }
-
-                document.getElementById('currentValue').textContent = data.value;
-
-                // Calculate trend
-                if (chartData.value.length >= 3) {
-                    const recent = chartData.value.slice(-3);
-                    const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
-                    const trend = currentValue - avg;
-
-                    const trendIndicator = document.getElementById('trendIndicator');
-                    const trendText = document.getElementById('trendText');
-
-                    if (Math.abs(trend) < 0.01) {
-                        trendIndicator.textContent = '━';
-                        trendIndicator.style.color = 'var(--text)';
-                        trendText.textContent = 'Stable';
-                        trendText.style.color = 'var(--text)';
-                    } else if (trend > 0) {
-                        trendIndicator.textContent = '↗';
-                        trendIndicator.style.color = 'var(--success)';
-                        trendText.textContent = `Rising (+${trend.toFixed(2)})`;
-                        trendText.style.color = 'var(--success)';
-                    } else {
-                        trendIndicator.textContent = '↘';
-                        trendIndicator.style.color = 'var(--accent)';
-                        trendText.textContent = `Falling (${trend.toFixed(2)})`;
-                        trendText.style.color = 'var(--accent)';
-                    }
-                }
-
-                document.getElementById('valueTimestamp').textContent = `Updated: ${new Date(data.timestamp).toLocaleString()}`;
-            } catch (error) {
-                console.error('Value update error:', error);
-                document.getElementById('currentValue').textContent = 'ERROR';
-                document.getElementById('valueTimestamp').textContent = `Error: ${error.message}`;
-            }
-        }
-
-        function startValueWidget() {
-            if (refreshIntervals.value) {
-                clearInterval(refreshIntervals.value);
-            }
-            chartData.value = [];
-            updateValueWidget();
-            refreshIntervals.value = setInterval(updateValueWidget, 5000);
-        }
-
-        function showRefreshIndicator(elementId) {
-            const indicator = document.getElementById(elementId);
-            indicator.classList.add('active');
-            setTimeout(() => {
-                indicator.classList.remove('active');
-            }, 500);
-        }
-
-        // URL Parameter handling
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-
-            if (params.get('instanceUrl')) {
-                document.getElementById('instanceUrl').value = params.get('instanceUrl');
-            }
-
-            if (params.get('token')) {
-                document.getElementById('accessToken').value = params.get('token');
-            }
-
-            if (params.get('autoConnect') === 'true' && params.get('token')) {
-                setTimeout(() => connectToOpenRemote(), 500);
-            }
-        });
+                        // URL Parameter handling
+                        window.addEventListener('DOMContentLoaded', () => {
+                            const params = new URLSearchParams(window.location.search);
+                            if (params.get('instanceUrl')) document.getElementById('instanceUrl').value = params.get('instanceUrl');
+                            if (params.get('token')) document.getElementById('accessToken').value = params.get('token');
+                            if (params.get('autoConnect') === 'true' && params.get('token')) {
+                                setTimeout(() => connectToOpenRemote(), 500);
+                            }
+                        });
     </script>
 
 </body>
 
-</html>
+</html> 
