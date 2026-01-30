@@ -353,6 +353,8 @@
                 </div>
 
                 <button onclick="connectToOpenRemote()">🔌 Connect to OpenRemote</button>
+                <button class="secondary" id="demoModeBtn" onclick="toggleDemoMode()"
+                    style="margin-top: 10px; background: #9b59b6;">🚀 Enable Demo Mode (Dummy Data)</button>
 
                 <div id="connectionStatus" class="status"></div>
             </div>
@@ -571,6 +573,7 @@
         // Global state
         let authToken = null;
         let instanceUrl = null;
+        let isDemoMode = false;
         let refreshIntervals = {};
         let chartInstances = {};
         let chartData = {
@@ -591,9 +594,40 @@
             { bg: 'rgba(26, 188, 156, 0.2)', border: 'rgba(26, 188, 156, 1)' }
         ];
 
+        // Toggle Demo Mode
+        function toggleDemoMode() {
+            isDemoMode = !isDemoMode;
+            const btn = document.getElementById('demoModeBtn');
+            if (isDemoMode) {
+                btn.textContent = '🛑 Disable Demo Mode';
+                btn.style.background = '#e74c3c';
+                showStatus('success', 'Demo Mode Enabled - Realistic data will be simulated!');
+
+                // Auto-fill example values
+                document.getElementById('line-asset-id').value = 'weather-station';
+                document.getElementById('line-attribute').value = 'temperature';
+                document.getElementById('area-asset-id').value = 'solar-array';
+                document.getElementById('area-attribute').value = 'power';
+                document.getElementById('stream-asset-id').value = 'grid-meter';
+                document.getElementById('stream-attribute').value = 'voltage';
+                document.getElementById('multi-metrics').value = 'room1:temp,room2:temp,room3:temp';
+                document.getElementById('gauge-asset-id').value = 'tank-1';
+                document.getElementById('gauge-attribute').value = 'level';
+                document.getElementById('value-asset-id').value = 'light-sensor';
+                document.getElementById('value-attribute').value = 'brightness';
+            } else {
+                btn.textContent = '🚀 Enable Demo Mode (Dummy Data)';
+                btn.style.background = '#9b59b6';
+                showStatus('warning', 'Demo Mode Disabled - Connecting to OpenRemote...');
+            }
+        }
+
         // Connect to OpenRemote
         async function connectToOpenRemote() {
-            instanceUrl = document.getElementById('instanceUrl').value.trim();
+            if (isDemoMode) {
+                showStatus('success', 'Currently in Demo Mode - Simulation is active!');
+                return;
+            }
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const token = document.getElementById('accessToken').value.trim();
@@ -670,6 +704,31 @@
         }
 
         async function fetchAttributeValue(assetId, attributeName) {
+            if (isDemoMode) {
+                // Simulate various types of telemetry based on attribute name
+                let value = 0;
+                let type = 'number';
+
+                if (attributeName.includes('temp')) {
+                    value = 20 + Math.random() * 10; // 20-30°C
+                } else if (attributeName.includes('power')) {
+                    value = 100 + Math.random() * 500; // 100-600W
+                } else if (attributeName.includes('volts')) {
+                    value = 220 + (Math.random() - 0.5) * 5; // 217-222V
+                } else if (attributeName.includes('hum')) {
+                    value = 40 + Math.random() * 20; // 40-60%
+                } else {
+                    value = Math.random() * 100;
+                }
+
+                return {
+                    value: value.toFixed(2),
+                    timestamp: Date.now(),
+                    assetName: `Demo Asset (${assetId})`,
+                    type: type
+                };
+            }
+
             if (!authToken || !instanceUrl) {
                 throw new Error('Not connected to OpenRemote');
             }
@@ -700,6 +759,25 @@
         }
 
         async function fetchHistoricalData(assetId, attributeName, fromTimestamp, toTimestamp, interval) {
+            if (isDemoMode) {
+                const points = [];
+                const count = Math.floor((toTimestamp - fromTimestamp) / interval);
+                let baseValue = 25; // Default base
+
+                if (attributeName.includes('power')) baseValue = 300;
+                if (attributeName.includes('hum')) baseValue = 50;
+
+                for (let i = 0; i <= count; i++) {
+                    const ts = fromTimestamp + (i * interval);
+                    const noise = (Math.random() - 0.5) * (baseValue * 0.1);
+                    points.push({
+                        timestamp: ts,
+                        value: (baseValue + noise).toFixed(2)
+                    });
+                }
+                return points;
+            }
+
             if (!authToken || !instanceUrl) {
                 throw new Error('Not connected to OpenRemote');
             }
@@ -712,7 +790,6 @@
             });
 
             if (!response.ok) {
-                // If historical data endpoint fails, return simulated data
                 console.warn('Historical data endpoint failed, using current value');
                 return [];
             }
